@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="splash_screen">Fun Learning</string>
+    <string name="app_name">FunLearning</string>
+    <string name="exit">Exit</string>    
+</resources>
