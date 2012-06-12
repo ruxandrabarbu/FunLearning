@@ -1,13 +1,13 @@
 package org.funlearning.view;
 
 import org.funlearning.R;
-import org.funlearning.activities.WriteActivity;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
@@ -26,8 +26,10 @@ public class WriteView extends View {
 	private Paint mBitmapPaint;
 	private Paint innerPaint;
 	private DisplayMetrics metrics;
-	
+
 	private static final int FINGER_SIZE = 30;
+
+	private OnBitmapDrawnListener listener;
 
 	public WriteView(Context aContext, DisplayMetrics aMetrics) {
 		super(aContext);
@@ -61,20 +63,34 @@ public class WriteView extends View {
 		mBitmap = BitmapFactory.decodeResource(getResources(),
 				R.drawable.background, bounds);
 
-		mBitmap = scaleToScreen(mBitmap);	
+		mBitmap = scaleToScreen(mBitmap);
 
 		mCanvas = new Canvas(mBitmap);
 
 	}
 
+	public interface OnBitmapDrawnListener {
+		void onBitmapDrawn(View v, Bitmap bitmapDrawn);
+	}
+
+	public void setOnBitmapDrawnListener(OnBitmapDrawnListener listener) {
+		this.listener = listener;
+	}
+
 	public Bitmap scaleToScreen(Bitmap bitmap) {
-		float scaleFactor = (float) metrics.widthPixels
-				/ (float) bitmap.getWidth();
-		int newWidth = (int) (bitmap.getWidth() * scaleFactor);
-		int newHeight = (int) (bitmap.getHeight() * scaleFactor);
-		Bitmap img = Bitmap.createScaledBitmap(bitmap, newWidth, newHeight,
-				true);
-		return img;
+		int width = bitmap.getWidth();
+		int height = bitmap.getHeight();
+
+		float scaleWidth = ((float) metrics.widthPixels) / width;
+		float scaleHeight = ((float) metrics.heightPixels) / height;
+
+		Matrix matrix = new Matrix();
+		matrix.postScale(scaleWidth, scaleHeight);
+
+		Bitmap resizedBitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height,
+				matrix, true);
+
+		return resizedBitmap;
 	}
 
 	public void setInnerPaint(Paint innerPaint) {
@@ -169,8 +185,9 @@ public class WriteView extends View {
 			break;
 		case MotionEvent.ACTION_UP:
 			touch_up();
+			if (listener != null)
+				listener.onBitmapDrawn(this, mBitmap);
 			invalidate();
-			new WriteActivity().imagesAreEqual(mBitmap);
 			break;
 		}
 		return true;
