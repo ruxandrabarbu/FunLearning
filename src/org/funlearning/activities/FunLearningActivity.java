@@ -17,21 +17,27 @@ public class FunLearningActivity extends Activity implements OnClickListener{
         
         findViewById(R.id.btnExit).setOnClickListener(this);
         findViewById(R.id.btnWrite).setOnClickListener(this);
+        findViewById(R.id.btnAlphabet).setOnClickListener(this);
     }
 
 	@Override
 	public void onClick(View v) {
+		Intent intent = new Intent();
 		switch (v.getId()) {
 		case R.id.btnExit:
 			finish();
 			break;
 			
-		case R.id.btnWrite:
-            Intent intent = new Intent();
+		case R.id.btnWrite:            
             intent.setClass(this, WriteActivity.class);
             startActivity(intent);
 			break;
-
+			
+		case R.id.btnAlphabet:
+            intent.setClass(this, AlphabetActivity.class);
+            startActivity(intent);
+			break;
+			
 		default:
 		}		
 	}

@@ -28,6 +28,10 @@
             android:name=".activities.WriteActivity"
             android:screenOrientation="landscape" >
         </activity>
+        <activity
+            android:name=".activities.AlphabetActivity"
+            android:screenOrientation="landscape" >
+        </activity>
     </application>
 
 </manifest>

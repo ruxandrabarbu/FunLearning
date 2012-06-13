@@ -6,6 +6,7 @@ import org.funlearning.view.WriteView.OnBitmapDrawnListener;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
@@ -74,25 +75,37 @@ public class WriteActivity extends Activity {
 			BitmapDrawable originalLetter = new BitmapDrawable(originalLetterBitmap);
 			BitmapDrawable drawnLetter = new BitmapDrawable(bitmapDrawn);
 
+			boolean ok = imagesAreEqual(originalLetter.getBitmap(), drawnLetter.getBitmap());
+			
+			Log.i("WriteActivity", "same region: " + ok);
 		}
 
 	};
 
-	public boolean imagesAreEqual(Bitmap i1) {
-		if (i1.getHeight() != originalLetterBitmap.getHeight())
+	public boolean imagesAreEqual(Bitmap image1, Bitmap image2) {
+		if (image1.getHeight() != image2.getHeight())
 			return false;
-		if (i1.getWidth() != originalLetterBitmap.getWidth())
+		if (image1.getWidth() != image2.getWidth())
 			return false;
 
+		// transform red into black
+		int [] allpixels = new int [ image2.getHeight()*image2.getWidth()];
+		image2.getPixels(allpixels, 0, image2.getWidth(), 0, 0, image2.getWidth(),image2.getHeight());
+		for(int i =0; i<image2.getHeight()*image2.getWidth();i++){
+		 if( allpixels[i] == Color.RED)
+		             allpixels[i] = Color.BLACK;
+		 }
+		image2.setPixels(allpixels, 0, image2.getWidth(), 0, 0, image2.getWidth(), image2.getHeight());
+		
 		int notEqual = 0;
 
-		for (int y = 0; y < i1.getHeight(); ++y)
-			for (int x = 0; x < i1.getWidth(); ++x)
-				if (i1.getPixel(x, y) != originalLetterBitmap.getPixel(x, y))
+		for (int y = 0; y < image1.getHeight(); ++y)
+			for (int x = 0; x < image1.getWidth(); ++x)
+				if (image1.getPixel(x, y) != image2.getPixel(x, y))
 					notEqual++;
 
 		Log.i("Fun Learning Write Activity", "not equal pixels" + notEqual);
-		if (notEqual > 10000)
+		if (notEqual > 12000)
 			return false;
 		else
 			return true;
