@@ -25,14 +25,11 @@ public class AlphabetActivity extends Activity implements
 	private static final String[] LettersSmall = { "a", "b", "c", "d", "e",
 			"f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r",
 			"s", "t", "u", "v", "w", "x", "y", "z" };
-	private static final String[] LettersBig = { "A", "B", "C", "D", "E", "F",
-			"G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S",
-			"T", "U", "V", "W", "X", "Y", "Z" };
 	private static final String[] LettersImage = { "apple", "bubbles",
-			"cup-cake", "door", "eraser", "fire", "grapes", "hydrant",
-			"ice-cream", "jelly", "key", "lightbulb", "mountain", "nest",
-			"onion", "pencil", "question mark", "ring", "snail", "tulip",
-			"umbrella", "v ", "w", "X", "Y", "Z" };
+			"cupcake", "door", "eraser", "fire", "grapes", "hydrant",
+			"icecream", "jelly", "key", "lightbulb", "mountain", "nest",
+			"onion", "pencil", "question_mark", "ring", "snail", "tulip",
+			"umbrella", "vase", "watermelon", "xylophone", "yo_yo", "zipper" };
 
 	private GestureDetector gestureDetector;
 	private View.OnTouchListener gestureListener;
@@ -117,7 +114,7 @@ public class AlphabetActivity extends Activity implements
 	}
 
 	private void sayText(int currentSaying) {
-		String toSay = LettersBig[currentSaying] + " is for "
+		String toSay = LettersSmall[currentSaying] + " is for "
 				+ LettersImage[currentSaying];
 		mTts.speak(toSay, TextToSpeech.QUEUE_FLUSH, null);
 	}
@@ -127,26 +124,29 @@ public class AlphabetActivity extends Activity implements
 		//the code works but i need to add all the resources once i get them and resize the images
 		//cause they are way too big
 		
+		String a_big = LettersSmall[currentPos] + "_big";
+		String a_small = LettersSmall[currentPos] + "_small";
+		
 //		ivImageLetter.setImageResource(this.getResources().getIdentifier(
 //				"drawable/" + LettersImage[currentPos], null, this.getPackageName()));
 //		ivBigLetter.setImageResource(this.getResources().getIdentifier(
-//				"drawable/" + LettersBig[currentPos], null, this.getPackageName()));
+//				"drawable/" + a_big, null, this.getPackageName()));
 //		ivSmallLetter.setImageResource(this.getResources().getIdentifier(
-//				"drawable/" + LettersSmall[currentPos], null, this.getPackageName()));
+//				"drawable/" + a_small, null, this.getPackageName()));
 	}
 
 	public void goBackward() {
 		if (currentLetter > 0) {
 			currentLetter--;
 		} else {
-			currentLetter = LettersBig.length - 1;
+			currentLetter = LettersSmall.length - 1;
 		}
 		changeImages(currentLetter);
 		sayText(currentLetter);
 	}
 
 	public void goForward() {
-		if (currentLetter < LettersBig.length - 1) {
+		if (currentLetter < LettersSmall.length - 1) {
 			currentLetter++;
 		} else {
 			currentLetter = 0;
