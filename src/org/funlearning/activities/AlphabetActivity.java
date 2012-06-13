@@ -56,8 +56,6 @@ public class AlphabetActivity extends Activity implements
 		ivBigLetter.setImageResource(R.drawable.apple);
 		ivSmallLetter.setImageResource(R.drawable.apple);
 
-		sayText(currentLetter);
-
 		// Gesture detection
 		gestureDetector = new GestureDetector(new MyGestureDetector());
 		gestureListener = new View.OnTouchListener() {
@@ -110,6 +108,7 @@ public class AlphabetActivity extends Activity implements
 				// Check the documentation for other possible result codes.
 				// For example, the language may be available for the locale,
 				// but not for the specified country and variant.
+				sayText(currentLetter);		
 			}
 		} else {
 			// Initialization failed.
@@ -153,7 +152,7 @@ public class AlphabetActivity extends Activity implements
 			currentLetter = 0;
 		}
 		changeImages(currentLetter);
-		sayText(currentLetter);
+		sayText(currentLetter);		
 	}
 
 	class MyGestureDetector extends SimpleOnGestureListener {
