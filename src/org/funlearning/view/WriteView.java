@@ -76,12 +76,6 @@ public class WriteView extends View {
 		this.listener = listener;
 	}
 
-	public void resetBitmap() {
-		mBitmap = BitmapFactory.decodeResource(getResources(),
-				R.drawable.background);
-		mBitmap = scaleToScreen(mBitmap);
-	}
-
 	public Bitmap scaleToScreen(Bitmap bitmap) {
 		int width = bitmap.getWidth();
 		int height = bitmap.getHeight();

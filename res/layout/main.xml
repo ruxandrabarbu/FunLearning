@@ -4,7 +4,8 @@
     android:layout_height="fill_parent"
     android:background="@android:color/white"
     android:gravity="center"
-    android:orientation="vertical" >
+    android:orientation="vertical" 
+    >
 
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -15,29 +16,29 @@
         android:orientation="horizontal"
         android:weightSum="5" >
 
-        <Button
+        <ImageButton
             android:id="@+id/btnAlphabet"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:padding="6dp"
-            android:text="Alphabet" />
+            android:padding="10dp"
+            android:src="@drawable/btn_alphabet" />
 
-        <Button
-            android:id="@+id/btn2"
+        <ImageButton
+            android:id="@+id/btnURead"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:padding="6dp"
-            android:text="Button2" />
+            android:padding="10dp"
+            android:src="@drawable/btn_smile" />
 
-        <Button
-            android:id="@+id/btn3"
+        <ImageButton
+            android:id="@+id/btnIRead"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:padding="6dp"
-            android:text="Button3" />
+            android:padding="10dp"
+            android:src="@drawable/btn_smile" />
     </LinearLayout>
 
     <LinearLayout
@@ -49,30 +50,29 @@
         android:orientation="horizontal"
         android:weightSum="5" >
 
-        <Button
-            android:id="@+id/btn3"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:padding="6dp"
-            android:text="Button3" />
-
-        <Button
+        <ImageButton
             android:id="@+id/btnWrite"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:padding="6dp"
-            android:text="Write" />
-
-        <Button
+            android:padding="10dp"
+            android:src="@drawable/btn_pencil" />
+
+        <ImageButton
+            android:id="@+id/btnGame"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="10dp"
+            android:src="@drawable/btn_xylophone" />
+
+        <ImageButton
             android:id="@+id/btnExit"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:padding="6dp"
-            android:text="@string/exit" />
-
+            android:padding="10dp"
+            android:src="@drawable/btn_door" />
     </LinearLayout>
 
 </LinearLayout>

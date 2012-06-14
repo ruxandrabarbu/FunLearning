@@ -92,7 +92,7 @@ public class WriteActivity extends Activity {
 				// fail, try again
 			}
 
-			if ((float) pEqual / pLetter > 0.73
+			if ((float) pEqual / pLetter > 0.71
 					&& (float) pEqual / pNotEqual > 1.5) {
 				if (currentPos < LettersImage.length - 1) {
 					currentPos++;
@@ -112,7 +112,16 @@ public class WriteActivity extends Activity {
 						"drawable/" + LettersImage[currentPos], null,
 						getPackageName()));
 
-		writeView.resetBitmap();
+		//add empty view
+		writeLayout.removeView(writeView);
+		writeView = new WriteView(this, metrics);
+		LayoutParams params = new LayoutParams(LayoutParams.FILL_PARENT,
+				LayoutParams.FILL_PARENT);
+		writeView.setLayoutParams(params);
+
+		// listen for change events in the bitmap drawn
+		writeView.setOnBitmapDrawnListener(changeListener);
+		writeLayout.addView(writeView);
 
 		originalLetterBitmap = ((BitmapDrawable) letterLayout.getBackground())
 				.getBitmap();

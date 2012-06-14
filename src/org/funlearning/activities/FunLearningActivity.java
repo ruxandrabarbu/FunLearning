@@ -18,6 +18,9 @@ public class FunLearningActivity extends Activity implements OnClickListener{
         findViewById(R.id.btnExit).setOnClickListener(this);
         findViewById(R.id.btnWrite).setOnClickListener(this);
         findViewById(R.id.btnAlphabet).setOnClickListener(this);
+        findViewById(R.id.btnGame).setOnClickListener(this);
+        findViewById(R.id.btnIRead).setOnClickListener(this);
+        findViewById(R.id.btnURead).setOnClickListener(this);
     }
 
 	@Override
@@ -36,6 +39,17 @@ public class FunLearningActivity extends Activity implements OnClickListener{
 		case R.id.btnAlphabet:
             intent.setClass(this, AlphabetActivity.class);
             startActivity(intent);
+			break;
+			
+		case R.id.btnGame:
+            intent.setClass(this, GameActivity.class);
+            startActivity(intent);
+			break;
+			
+		case R.id.btnIRead:            
+			break;
+			
+		case R.id.btnURead:
 			break;
 			
 		default:
