@@ -28,8 +28,8 @@ public class AlphabetActivity extends Activity implements
 	private static final String[] LettersImage = { "apple", "bubbles",
 			"cupcake", "door", "eraser", "fire", "grapes", "hydrant",
 			"icecream", "jelly", "key", "lightbulb", "mountain", "nest",
-			"onion", "pencil", "question_mark", "ring", "snail", "tulip",
-			"umbrella", "vase", "watermelon", "xylophone", "yo_yo", "zipper" };
+			"onion", "pencil", "questionmark", "ring", "snail", "tulip",
+			"umbrella", "vase", "watermelon", "xylophone", "yoyo", "zipper" };
 
 	private GestureDetector gestureDetector;
 	private View.OnTouchListener gestureListener;
@@ -50,8 +50,8 @@ public class AlphabetActivity extends Activity implements
 		ivSmallLetter = (ImageView) findViewById(R.id.ivSmallLetter);
 
 		ivImageLetter.setImageResource(R.drawable.apple);
-		ivBigLetter.setImageResource(R.drawable.apple);
-		ivSmallLetter.setImageResource(R.drawable.apple);
+		ivBigLetter.setImageResource(R.drawable.a_big);
+		ivSmallLetter.setImageResource(R.drawable.a_small);
 
 		// Gesture detection
 		gestureDetector = new GestureDetector(new MyGestureDetector());
@@ -120,19 +120,16 @@ public class AlphabetActivity extends Activity implements
 	}
 
 	private void changeImages(int currentPos) {
-
-		//the code works but i need to add all the resources once i get them and resize the images
-		//cause they are way too big
 		
 		String a_big = LettersSmall[currentPos] + "_big";
 		String a_small = LettersSmall[currentPos] + "_small";
 		
-//		ivImageLetter.setImageResource(this.getResources().getIdentifier(
-//				"drawable/" + LettersImage[currentPos], null, this.getPackageName()));
-//		ivBigLetter.setImageResource(this.getResources().getIdentifier(
-//				"drawable/" + a_big, null, this.getPackageName()));
-//		ivSmallLetter.setImageResource(this.getResources().getIdentifier(
-//				"drawable/" + a_small, null, this.getPackageName()));
+		ivImageLetter.setImageResource(this.getResources().getIdentifier(
+				"drawable/" + LettersImage[currentPos], null, this.getPackageName()));
+		ivBigLetter.setImageResource(this.getResources().getIdentifier(
+				"drawable/" + a_big, null, this.getPackageName()));
+		ivSmallLetter.setImageResource(this.getResources().getIdentifier(
+				"drawable/" + a_small, null, this.getPackageName()));
 	}
 
 	public void goBackward() {

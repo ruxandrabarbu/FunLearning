@@ -66,7 +66,6 @@ public class WriteView extends View {
 		mBitmap = scaleToScreen(mBitmap);
 
 		mCanvas = new Canvas(mBitmap);
-
 	}
 
 	public interface OnBitmapDrawnListener {
@@ -75,6 +74,12 @@ public class WriteView extends View {
 
 	public void setOnBitmapDrawnListener(OnBitmapDrawnListener listener) {
 		this.listener = listener;
+	}
+
+	public void resetBitmap() {
+		mBitmap = BitmapFactory.decodeResource(getResources(),
+				R.drawable.background);
+		mBitmap = scaleToScreen(mBitmap);
 	}
 
 	public Bitmap scaleToScreen(Bitmap bitmap) {

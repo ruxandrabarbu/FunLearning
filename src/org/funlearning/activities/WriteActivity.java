@@ -9,7 +9,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
@@ -34,6 +33,7 @@ public class WriteActivity extends Activity {
 	private int pLetter;
 	private int pEqual;
 	private int pNotEqual;
+	private WriteView writeView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -42,43 +42,34 @@ public class WriteActivity extends Activity {
 		letterLayout = (LinearLayout) findViewById(R.id.layoutLetter);
 		writeLayout = (LinearLayout) findViewById(R.id.layoutWrite);
 
-		initParameters();
+		letterLayout
+				.setBackgroundResource(getResources().getIdentifier(
+						"drawable/" + LettersImage[currentPos], null,
+						getPackageName()));
 
 		metrics = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
-		WriteView wv = new WriteView(this, metrics);
+		writeView = new WriteView(this, metrics);
 		LayoutParams params = new LayoutParams(LayoutParams.FILL_PARENT,
 				LayoutParams.FILL_PARENT);
-		wv.setLayoutParams(params);
+		writeView.setLayoutParams(params);
 
 		// listen for change events in the bitmap drawn
-		wv.setOnBitmapDrawnListener(changeListener);
-		writeLayout.addView(wv);
+		writeView.setOnBitmapDrawnListener(changeListener);
+		writeLayout.addView(writeView);
 
-		setLetter();
+		resetLayers();
 		super.onCreate(savedInstanceState);
 	}
 
-	public void setLetter() {
-		originalLetterBitmap = ((BitmapDrawable) letterLayout.getBackground())
-				.getBitmap();
-		originalLetterBitmap = scaleBitmap(originalLetterBitmap,
-				metrics.heightPixels, metrics.widthPixels);
-	}
+	public Bitmap scaleBitmap(Bitmap bitmap) {
 
-	public Bitmap scaleBitmap(Bitmap bitmap, int newHeight, int newWidth) {
-		// int width = bitmap.getWidth();
-		// int height = bitmap.getHeight();
-		//
-		// float scaleWidth = ((float) newHeight) / width;
-		// float scaleHeight = ((float) newWidth) / height;
-		//
-		// Matrix matrix = new Matrix();
-		// matrix.postScale(scaleWidth, scaleHeight);
+		float proportion = (float) bitmap.getHeight() / bitmap.getWidth();
+		int newHeight = Math.round(proportion * 32);
 
-		Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, newWidth,
-				newHeight, true);
+		Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, 32, newHeight,
+				true);
 
 		return resizedBitmap;
 	}
@@ -91,62 +82,56 @@ public class WriteActivity extends Activity {
 					originalLetterBitmap);
 			BitmapDrawable drawnLetter = new BitmapDrawable(bitmapDrawn);
 
-			float proportion = (float) originalLetter.getIntrinsicHeight()
-					/ originalLetter.getIntrinsicWidth();
+			Bitmap scaledOriginalLetter = scaleBitmap(originalLetter
+					.getBitmap());
+			Bitmap scaledDrawnLetter = scaleBitmap(drawnLetter.getBitmap());
 
-			int newHeight = Math.round(proportion * 32);
+			setPixelParams(scaledOriginalLetter, scaledDrawnLetter);
 
-			Bitmap scaledOriginalLetter = scaleBitmap(
-					originalLetter.getBitmap(), newHeight, 32);
-			Bitmap scaledDrawnLetter = scaleBitmap(drawnLetter.getBitmap(),
-					newHeight, 32);
-
-			imagesAreEqual(scaledOriginalLetter, scaledDrawnLetter);
-
-			if (pNotEqual / pEqual >= 1 || pLetter < pNotEqual) {
+			if ((float) pNotEqual / pEqual >= 1 || pLetter < pNotEqual) {
 				// fail, try again
 			}
 
-			if (pEqual / pLetter > 0.2 && pEqual / pNotEqual > 0.7) {
+			if ((float) pEqual / pLetter > 0.73
+					&& (float) pEqual / pNotEqual > 1.5) {
 				if (currentPos < LettersImage.length - 1) {
 					currentPos++;
 				} else {
 					currentPos = 0;
 				}
-				// initParameters();
+				resetLayers();
 			}
 
 		}
 
 	};
 
-	public void initParameters() {
-		// letterLayout.setBackgroundResource(getResources()
-		// .getIdentifier("drawable/" + LettersImage[currentPos],
-		// null, getPackageName()));
+	public void resetLayers() {
+		letterLayout
+				.setBackgroundResource(getResources().getIdentifier(
+						"drawable/" + LettersImage[currentPos], null,
+						getPackageName()));
+
+		writeView.resetBitmap();
+
+		originalLetterBitmap = ((BitmapDrawable) letterLayout.getBackground())
+				.getBitmap();
+		originalLetterBitmap = Bitmap.createScaledBitmap(originalLetterBitmap,
+				metrics.widthPixels, metrics.heightPixels, true);
+
+		BitmapDrawable originalLetter = new BitmapDrawable(originalLetterBitmap);
+		Bitmap scaledOriginalLetter = scaleBitmap(originalLetter.getBitmap());
+
+		setPixelParams(scaledOriginalLetter, scaledOriginalLetter);
+
+		pEqual = 0;
+		pNotEqual = 0;
+	}
+
+	public void setPixelParams(Bitmap image1, Bitmap image2) {
 		pEqual = 0;
 		pNotEqual = 0;
 		pLetter = 0;
-
-		BitmapDrawable originalLetter = new BitmapDrawable(originalLetterBitmap);
-
-		float proportion = (float) originalLetter.getIntrinsicHeight()
-				/ originalLetter.getIntrinsicWidth();
-
-		int newHeight = Math.round(proportion * 32);
-
-		Bitmap scaledOriginalLetter = scaleBitmap(originalLetter.getBitmap(),
-				newHeight, 32);
-
-		imagesAreEqual(scaledOriginalLetter, scaledOriginalLetter);
-
-		pEqual = 0;
-		pNotEqual = 0;
-
-	}
-
-	public void imagesAreEqual(Bitmap image1, Bitmap image2) {
-
 		for (int y = 0; y < image1.getHeight(); ++y)
 			for (int x = 0; x < image1.getWidth(); ++x) {
 				// background is transparent
@@ -163,7 +148,5 @@ public class WriteActivity extends Activity {
 				}
 
 			}
-
-		Log.i("Fun Learning Write Activity", "not equal pixels" + pNotEqual);
 	}
 }
