@@ -1,14 +1,11 @@
 package org.funlearning.activities;
 
-import java.util.Locale;
-
 import org.funlearning.R;
+import org.funlearning.utils.Speak;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.MotionEvent;
@@ -16,8 +13,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 
-public class AlphabetActivity extends Activity implements
-		TextToSpeech.OnInitListener, OnClickListener {
+public class AlphabetActivity extends Activity implements OnClickListener {
 
 	private static final int SWIPE_MIN_DISTANCE = 120;
 	private static final int SWIPE_MAX_OFF_PATH = 250;
@@ -33,7 +29,7 @@ public class AlphabetActivity extends Activity implements
 
 	private GestureDetector gestureDetector;
 	private View.OnTouchListener gestureListener;
-	private TextToSpeech mTts;
+	private Speak mTts;
 	private int currentLetter = 0;
 	private ImageView ivImageLetter;
 	private ImageView ivBigLetter;
@@ -43,7 +39,7 @@ public class AlphabetActivity extends Activity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		setContentView(R.layout.alphabet);
 
-		mTts = new TextToSpeech(this, this);
+		mTts = new Speak(this);
 
 		ivImageLetter = (ImageView) findViewById(R.id.ivImageLetter);
 		ivBigLetter = (ImageView) findViewById(R.id.ivBigLetter);
@@ -73,11 +69,7 @@ public class AlphabetActivity extends Activity implements
 
 	@Override
 	public void onDestroy() {
-		// Don't forget to shutdown!
-		if (mTts != null) {
-			mTts.stop();
-			mTts.shutdown();
-		}
+		mTts.destroy();
 		super.onDestroy();
 	}
 
@@ -86,46 +78,20 @@ public class AlphabetActivity extends Activity implements
 		// nothing
 	}
 
-	public void onInit(int status) {
-		// status can be either TextToSpeech.SUCCESS or TextToSpeech.ERROR.
-		if (status == TextToSpeech.SUCCESS) {
-			// Set preferred language to US english.
-			int result = mTts.setLanguage(Locale.US);
-			if (result == TextToSpeech.LANG_MISSING_DATA) {
-				// Lanuage data is missing, install it
-				Intent installIntent = new Intent();
-				installIntent
-						.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
-				startActivity(installIntent);
-				Log.e("AlphabetAvtivity", "Language is not available.");
-			} else if (result == TextToSpeech.LANG_NOT_SUPPORTED) {
-				// Language is not supported.
-				Log.e("AlphabetAvtivity", "Language is not supported.");
-			} else {
-				// Check the documentation for other possible result codes.
-				// For example, the language may be available for the locale,
-				// but not for the specified country and variant.
-				sayText(currentLetter);		
-			}
-		} else {
-			// Initialization failed.
-			Log.e("AlphabetAvtivity", "Could not initialize TextToSpeech.");
-		}
-	}
-
 	private void sayText(int currentSaying) {
 		String toSay = LettersSmall[currentSaying] + " is for "
 				+ LettersImage[currentSaying];
-		mTts.speak(toSay, TextToSpeech.QUEUE_FLUSH, null);
+		mTts.speak(toSay, TextToSpeech.QUEUE_FLUSH);
 	}
 
 	private void changeImages(int currentPos) {
-		
+
 		String a_big = LettersSmall[currentPos] + "_big";
 		String a_small = LettersSmall[currentPos] + "_small";
-		
+
 		ivImageLetter.setImageResource(this.getResources().getIdentifier(
-				"drawable/" + LettersImage[currentPos], null, this.getPackageName()));
+				"drawable/" + LettersImage[currentPos], null,
+				this.getPackageName()));
 		ivBigLetter.setImageResource(this.getResources().getIdentifier(
 				"drawable/" + a_big, null, this.getPackageName()));
 		ivSmallLetter.setImageResource(this.getResources().getIdentifier(
@@ -149,7 +115,7 @@ public class AlphabetActivity extends Activity implements
 			currentLetter = 0;
 		}
 		changeImages(currentLetter);
-		sayText(currentLetter);		
+		sayText(currentLetter);
 	}
 
 	class MyGestureDetector extends SimpleOnGestureListener {

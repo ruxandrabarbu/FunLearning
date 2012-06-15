@@ -63,7 +63,7 @@ public class WriteActivity extends Activity {
 		super.onCreate(savedInstanceState);
 	}
 
-	public Bitmap scaleBitmap(Bitmap bitmap) {
+	private Bitmap scaleBitmap(Bitmap bitmap) {
 
 		float proportion = (float) bitmap.getHeight() / bitmap.getWidth();
 		int newHeight = Math.round(proportion * 32);
@@ -89,7 +89,7 @@ public class WriteActivity extends Activity {
 			setPixelParams(scaledOriginalLetter, scaledDrawnLetter);
 
 			if ((float) pNotEqual / pEqual >= 1 || pLetter < pNotEqual) {
-				// fail, try again
+				whatToDoNext();				
 			}
 
 			if ((float) pEqual / pLetter > 0.71
@@ -106,7 +106,7 @@ public class WriteActivity extends Activity {
 
 	};
 
-	public void resetLayers() {
+	private void resetLayers() {
 		letterLayout
 				.setBackgroundResource(getResources().getIdentifier(
 						"drawable/" + LettersImage[currentPos], null,
@@ -136,8 +136,12 @@ public class WriteActivity extends Activity {
 		pEqual = 0;
 		pNotEqual = 0;
 	}
+	
+	private void whatToDoNext() {
+		//not sure yet
+	}
 
-	public void setPixelParams(Bitmap image1, Bitmap image2) {
+	private void setPixelParams(Bitmap image1, Bitmap image2) {
 		pEqual = 0;
 		pNotEqual = 0;
 		pLetter = 0;

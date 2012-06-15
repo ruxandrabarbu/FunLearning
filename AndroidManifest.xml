@@ -32,8 +32,12 @@
             android:name=".activities.AlphabetActivity"
             android:screenOrientation="landscape" >
         </activity>
-                <activity
+        <activity
             android:name=".activities.GameActivity"
+            android:screenOrientation="landscape" >
+        </activity>
+        <activity
+            android:name=".utils.Speak"
             android:screenOrientation="landscape" >
         </activity>
     </application>
