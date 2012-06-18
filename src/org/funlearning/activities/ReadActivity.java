@@ -86,11 +86,14 @@ public class ReadActivity extends Activity implements OnClickListener,
 
 		setWord();
 
-		mTts.setRare();
+		super.onCreate(savedInstanceState);
+	}
+	
+	@Override
+	protected void onStart() {
 		spellWord(currentWord);
 		readWord(currentWord);
-
-		super.onCreate(savedInstanceState);
+		super.onStart();
 	}
 
 	private void setWord() {

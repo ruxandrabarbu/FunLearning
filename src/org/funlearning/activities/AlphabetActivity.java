@@ -61,9 +61,15 @@ public class AlphabetActivity extends Activity implements OnClickListener {
 		ivSmallLetter.setOnClickListener(AlphabetActivity.this);
 		ivImageLetter.setOnTouchListener(gestureListener);
 		ivBigLetter.setOnTouchListener(gestureListener);
-		ivSmallLetter.setOnTouchListener(gestureListener);
-
+		ivSmallLetter.setOnTouchListener(gestureListener);		
+		
 		super.onCreate(savedInstanceState);
+	}
+	
+	@Override
+	protected void onStart() {
+		sayText(currentLetter);
+		super.onStart();
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package org.funlearning.utils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Random;
@@ -18,9 +19,14 @@ public class Speak implements TextToSpeech.OnInitListener,
 
 	private static final Random RANDOM = new Random();
 	
+	private ArrayList<String> toSayQueue;
+	private ArrayList<Integer> queueModeQueue;
+	
 	private TextToSpeech mTts;
 	private boolean isPlaying;
 	private HashMap<String, String> params;
+	
+	private boolean isInitialized = false;
 
 	/**
 	 * Called when the activity is first created.
@@ -31,6 +37,9 @@ public class Speak implements TextToSpeech.OnInitListener,
 
 		params = new HashMap<String, String>();
 		params.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "stringId");
+		
+		toSayQueue = new ArrayList<String>();
+		queueModeQueue = new ArrayList<Integer>();
 	}
 
 	/**
@@ -60,6 +69,10 @@ public class Speak implements TextToSpeech.OnInitListener,
 				// but not for the specified country and variant.
 
 			}
+			isInitialized = true;
+			for (int i = 0; i < toSayQueue.size(); i++) {
+				mTts.speak(toSayQueue.get(i), queueModeQueue.get(i), null);
+			}
 		} else {
 			// Initialization failed.
 			Log.e("FunLearningAvtivity", "Could not initialize TextToSpeech.");
@@ -86,6 +99,10 @@ public class Speak implements TextToSpeech.OnInitListener,
 
 	public void speak(String toSay, int queueMode) {
 		isPlaying = true;
+		if (!isInitialized) {
+			toSayQueue.add(toSay);
+			queueModeQueue.add(queueMode);
+		}
 		mTts.speak(toSay, queueMode, null);
 	}
 

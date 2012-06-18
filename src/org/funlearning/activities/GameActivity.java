@@ -51,8 +51,7 @@ public class GameActivity extends Activity implements OnClickListener {
 
 		currentImages = new int[5];
 
-		generateGame();
-		readLetter();
+		generateGame();		
 
 		ivLetter.setOnClickListener(this);
 		ivImage1.setOnClickListener(this);
@@ -61,6 +60,12 @@ public class GameActivity extends Activity implements OnClickListener {
 		ivImage4.setOnClickListener(this);
 
 		super.onCreate(savedInstanceState);
+	}
+	
+	@Override
+	protected void onStart() {
+		readLetter();
+		super.onStart();
 	}
 
 	private void readLetter() {
