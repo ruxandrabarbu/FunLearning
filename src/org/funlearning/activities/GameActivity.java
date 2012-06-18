@@ -16,18 +16,13 @@ import android.view.View.OnClickListener;
 import android.widget.ImageView;
 
 public class GameActivity extends Activity implements OnClickListener {
-
-	private static final String[] LettersSmall = { "a", "b", "c", "d", "e",
-			"f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r",
-			"s", "t", "u", "v", "w", "x", "y", "z" };
-	private static final String[] Congratulations = { "well done", "good job",
-			"yey" };
-	private static final String[] TryAgain = { "guess again", "try again" };
+	private static final int SMALL_A_CODE = 97; //small a
+	private static final int NO_LETTERS = 24; //no of letters in the alphabet
 
 	private static final Random RANDOM = new Random();
 
 	private ArrayList<Integer> lettersSpoken = new ArrayList<Integer>();
-	private ImagesJSONParser allImages; 
+	private ImagesJSONParser allImages;
 
 	private ImageView ivLetter;
 	private ImageView ivImage1;
@@ -69,24 +64,13 @@ public class GameActivity extends Activity implements OnClickListener {
 	}
 
 	private void readLetter() {
-		String toSay = LettersSmall[currentImages[correctImage]] + " is for ";
+		String toSay = String.valueOf((char)(currentImages[correctImage] + SMALL_A_CODE)) + " is for ";
 		mTts.speak(toSay, TextToSpeech.QUEUE_FLUSH);
 	}
 
 	private void readImage(int imageNo) {
 		String toSay = allImages.getAt(imageNo);
 		mTts.speak(toSay, TextToSpeech.QUEUE_FLUSH);
-	}
-
-	private void readCongratulations() {
-		String toSay = "   "
-				+ Congratulations[RANDOM.nextInt(Congratulations.length)];
-		mTts.speak(toSay, TextToSpeech.QUEUE_ADD);
-	}
-
-	private void readTryAgain() {
-		String toSay = "   " + TryAgain[RANDOM.nextInt(TryAgain.length)];
-		mTts.speak(toSay, TextToSpeech.QUEUE_ADD);
 	}
 
 	@Override
@@ -97,7 +81,7 @@ public class GameActivity extends Activity implements OnClickListener {
 
 	@Override
 	public void onClick(View v) {
-		//TODO make it more baby proof
+		// TODO make it more baby proof
 		removeListeners();
 		switch (v.getId()) {
 		case R.id.ivImage1:
@@ -128,7 +112,7 @@ public class GameActivity extends Activity implements OnClickListener {
 	private void imageSelected(int imageSelected) {
 		readImage(currentImages[imageSelected]);
 		if (correctImage == imageSelected) {
-			readCongratulations();
+			mTts.sayRandomCongratulation();
 			mTts.playSilence();
 			boolean go = mTts.isPlaing();
 			while (go) {
@@ -137,7 +121,7 @@ public class GameActivity extends Activity implements OnClickListener {
 			generateGame();
 			readLetter();
 		} else {
-			readTryAgain();
+			mTts.sayRandomTryAgain();
 		}
 	}
 
@@ -156,7 +140,7 @@ public class GameActivity extends Activity implements OnClickListener {
 	}
 
 	private void generateGame() {
-		int letterLenght = LettersSmall.length;
+		int letterLenght = NO_LETTERS;
 		int letterPos = RANDOM.nextInt(letterLenght);
 		while (lettersSpoken.contains(letterPos)) {
 			letterPos = RANDOM.nextInt(letterLenght);
@@ -169,7 +153,7 @@ public class GameActivity extends Activity implements OnClickListener {
 
 		correctImage = RANDOM.nextInt(4) + 1;
 
-		String a_big = LettersSmall[letterPos] + "_big";
+		String a_big = String.valueOf((char)(letterPos + SMALL_A_CODE)) + "_big";
 
 		ivLetter.setImageResource(this.getResources().getIdentifier(
 				"drawable/" + a_big, null, this.getPackageName()));

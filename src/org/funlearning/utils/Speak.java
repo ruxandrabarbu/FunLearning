@@ -2,6 +2,7 @@ package org.funlearning.utils;
 
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Random;
 
 import android.content.Context;
 import android.speech.tts.TextToSpeech;
@@ -10,6 +11,13 @@ import android.util.Log;
 
 public class Speak implements TextToSpeech.OnInitListener,
 		OnUtteranceCompletedListener {
+
+	private static final String[] Congratulations = { "well done", "good job",
+			"you did well" };
+	private static final String[] TryAgain = { "guess again", "try again" };
+
+	private static final Random RANDOM = new Random();
+	
 	private TextToSpeech mTts;
 	private boolean isPlaying;
 	private HashMap<String, String> params;
@@ -20,7 +28,7 @@ public class Speak implements TextToSpeech.OnInitListener,
 
 	public Speak(Context context) {
 		mTts = new TextToSpeech(context, this);
-		
+
 		params = new HashMap<String, String>();
 		params.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "stringId");
 	}
@@ -88,12 +96,24 @@ public class Speak implements TextToSpeech.OnInitListener,
 	public boolean isPlaing() {
 		return isPlaying;
 	}
-	
+
 	public void setRare() {
 		mTts.setSpeechRate((float) 0.6);
 	}
-	
+
 	public void setNormal() {
 		mTts.setSpeechRate(1);
+	}
+
+	public void sayRandomCongratulation() {
+		String toSay = "   "
+				+ Congratulations[RANDOM.nextInt(Congratulations.length)];
+		mTts.speak(toSay, TextToSpeech.QUEUE_ADD, null);
+	}
+	
+	public void sayRandomTryAgain() {
+		String toSay = "   "
+			+ TryAgain[RANDOM.nextInt(TryAgain.length)];
+	mTts.speak(toSay, TextToSpeech.QUEUE_ADD, null);		
 	}
 }
