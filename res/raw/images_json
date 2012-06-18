@@ -1,0 +1,82 @@
+{
+    "images": [
+        {
+            "name": "apple"
+        },
+        {
+            "name": "bubbles"
+        },
+        {
+            "name": "cupcake"
+        },
+        {
+            "name": "door"
+        },
+        {
+            "name": "eraser"
+        },
+        {
+            "name": "fire"
+        },
+        {
+            "name": "grapes"
+        },
+        {
+            "name": "hydrant"
+        },
+        {
+            "name": "icecream"
+        },
+        {
+            "name": "jelly"
+        },
+        {
+            "name": "key"
+        },
+        {
+            "name": "lightbulb"
+        },
+        {
+            "name": "mountain"
+        },
+        {
+            "name": "nest"
+        },
+        {
+            "name": "onion"
+        },
+        {
+            "name": "pencil"
+        },
+        {
+            "name": "questionmark"
+        },
+        {
+            "name": "ring"
+        },
+        {
+            "name": "snail"
+        },
+        {
+            "name": "tulip"
+        },
+        {
+            "name": "umbrella"
+        },
+        {
+            "name": "vase"
+        },
+        {
+            "name": "watermelon"
+        },
+        {
+            "name": "xylophone"
+        },
+        {
+            "name": "yoyo"
+        },
+        {
+            "name": "zipper"
+        }
+    ]
+}

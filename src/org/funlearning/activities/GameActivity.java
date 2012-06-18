@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import org.funlearning.R;
+import org.funlearning.utils.ImagesJSONParser;
 import org.funlearning.utils.Speak;
 
 import android.app.Activity;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.view.View;
@@ -18,11 +20,6 @@ public class GameActivity extends Activity implements OnClickListener {
 	private static final String[] LettersSmall = { "a", "b", "c", "d", "e",
 			"f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r",
 			"s", "t", "u", "v", "w", "x", "y", "z" };
-	private static final String[] LettersImage = { "apple", "bubbles",
-			"cupcake", "door", "eraser", "fire", "grapes", "hydrant",
-			"icecream", "jelly", "key", "lightbulb", "mountain", "nest",
-			"onion", "pencil", "questionmark", "ring", "snail", "tulip",
-			"umbrella", "vase", "watermelon", "xylophone", "yoyo", "zipper" };
 	private static final String[] Congratulations = { "well done", "good job",
 			"yey" };
 	private static final String[] TryAgain = { "guess again", "try again" };
@@ -30,6 +27,7 @@ public class GameActivity extends Activity implements OnClickListener {
 	private static final Random RANDOM = new Random();
 
 	private ArrayList<Integer> lettersSpoken = new ArrayList<Integer>();
+	private ImagesJSONParser allImages; 
 
 	private ImageView ivLetter;
 	private ImageView ivImage1;
@@ -37,7 +35,7 @@ public class GameActivity extends Activity implements OnClickListener {
 	private ImageView ivImage3;
 	private ImageView ivImage4;
 
-	private int[] images;
+	private int[] currentImages;
 
 	private int correctImage;
 	private Speak mTts;
@@ -45,8 +43,10 @@ public class GameActivity extends Activity implements OnClickListener {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		setContentView(R.layout.game);
+		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
 		mTts = new Speak(this);
+		allImages = new ImagesJSONParser(this);
 
 		ivLetter = (ImageView) findViewById(R.id.ivLetter);
 		ivImage1 = (ImageView) findViewById(R.id.ivImage1);
@@ -54,7 +54,7 @@ public class GameActivity extends Activity implements OnClickListener {
 		ivImage3 = (ImageView) findViewById(R.id.ivImage3);
 		ivImage4 = (ImageView) findViewById(R.id.ivImage4);
 
-		images = new int[5];
+		currentImages = new int[5];
 
 		generateGame();
 		readLetter();
@@ -69,12 +69,12 @@ public class GameActivity extends Activity implements OnClickListener {
 	}
 
 	private void readLetter() {
-		String toSay = LettersSmall[images[correctImage]] + " is for ";
+		String toSay = LettersSmall[currentImages[correctImage]] + " is for ";
 		mTts.speak(toSay, TextToSpeech.QUEUE_FLUSH);
 	}
 
 	private void readImage(int imageNo) {
-		String toSay = LettersImage[imageNo];
+		String toSay = allImages.getAt(imageNo);
 		mTts.speak(toSay, TextToSpeech.QUEUE_FLUSH);
 	}
 
@@ -126,7 +126,7 @@ public class GameActivity extends Activity implements OnClickListener {
 	}
 
 	private void imageSelected(int imageSelected) {
-		readImage(images[imageSelected]);
+		readImage(currentImages[imageSelected]);
 		if (correctImage == imageSelected) {
 			readCongratulations();
 			mTts.playSilence();
@@ -182,25 +182,25 @@ public class GameActivity extends Activity implements OnClickListener {
 					.getIdentifier("id/" + ivName, null, this.getPackageName()));
 
 			if (i == correctImage) {
-				images[i] = letterPos;
-				a_image = LettersImage[letterPos];
+				currentImages[i] = letterPos;
+				a_image = allImages.getAt(letterPos);
 				iv.setImageResource(this.getResources().getIdentifier(
 						"drawable/" + a_image, null, this.getPackageName()));
 			} else {
 				boolean ok = false;
 				int randomImage = 0;
 				while (!ok) {
-					randomImage = RANDOM.nextInt(letterLenght);
+					randomImage = allImages.getRandomWordPos();
 					ok = true;
 					if (letterPos == randomImage)
 						ok = false;
 					for (int j = 1; j < i; j++) {
-						if (randomImage == images[j])
+						if (randomImage == currentImages[j])
 							ok = false;
 					}
 				}
-				images[i] = randomImage;
-				a_image = LettersImage[randomImage];
+				currentImages[i] = randomImage;
+				a_image = allImages.getAt(randomImage);
 				iv.setImageResource(this.getResources().getIdentifier(
 						"drawable/" + a_image, null, this.getPackageName()));
 			}

@@ -19,6 +19,8 @@ import android.view.View;
 
 public class WriteView extends View {
 
+	private int fingerSize = 30;
+	
 	private Paint mPaint;
 	private Bitmap mBitmap;
 	private Canvas mCanvas;
@@ -26,8 +28,6 @@ public class WriteView extends View {
 	private Paint mBitmapPaint;
 	private Paint innerPaint;
 	private DisplayMetrics metrics;
-
-	private static final int FINGER_SIZE = 30;
 
 	private OnBitmapDrawnListener listener;
 
@@ -42,6 +42,8 @@ public class WriteView extends View {
 		innerPaint.setColor(Color.TRANSPARENT);
 		innerPaint.setAntiAlias(true);
 
+		fingerSize =(int) (((float) metrics.heightPixels / metrics.widthPixels) * 45);
+		
 		mPaint = new Paint();
 		mPaint.setAntiAlias(true);
 		mPaint.setDither(true);
@@ -49,7 +51,7 @@ public class WriteView extends View {
 		mPaint.setStyle(Paint.Style.STROKE);
 		mPaint.setStrokeJoin(Paint.Join.ROUND);
 		mPaint.setStrokeCap(Paint.Cap.ROUND);
-		mPaint.setStrokeWidth(FINGER_SIZE);
+		mPaint.setStrokeWidth(fingerSize);
 
 		// set the paint in erase mode
 		mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DARKEN));

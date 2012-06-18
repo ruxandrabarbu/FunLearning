@@ -25,7 +25,7 @@
             android:src="@drawable/btn_alphabet" />
 
         <ImageButton
-            android:id="@+id/btnURead"
+            android:id="@+id/btnRead"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -33,7 +33,7 @@
             android:src="@drawable/btn_smile" />
 
         <ImageButton
-            android:id="@+id/btnIRead"
+            android:id="@+id/btnListen"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"

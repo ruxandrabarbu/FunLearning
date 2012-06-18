@@ -7,27 +7,26 @@ import org.funlearning.view.WriteView.OnBitmapDrawnListener;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
-public class WriteActivity extends Activity {
+public class WriteActivity extends Activity implements OnClickListener {
 
-	private static final String[] LettersImage = { "a_big", "a_small", "b_big",
-			"b_small", "c_big", "c_small", "d_big", "d_small", "e_big",
-			"e_small", "f_big", "f_small", "g_big", "g_small", "h_big",
-			"h_small", "i_big", "i_small", "j_big", "j_small", "k_big",
-			"k_small", "l_big", "l_small", "m_big", "m_small", "n_big",
-			"n_small", "o_big", "o_small", "p_big", "p_small", "q_big",
-			"q_small", "r_big", "r_small", "s_big", "s_small", "t_big",
-			"t_small", "u_big", "u_small", "v_big", "v_small", "w_big",
-			"w_small", "x_big", "x_small", "y_big", "y_small", "z_big",
-			"z_small" };
+	private static final int BUTOON_REDO_ID = 666;
+	private static final int BUTTON_SKIP_ID = 999;
+	private static final int SMALL_A_CODE = 97; //small a
+	private static final int NO_LETTERS = 48; //no of letters in the alphabet(big and small)
+
 	private DisplayMetrics metrics;
 	private LinearLayout letterLayout;
-	private LinearLayout writeLayout;
+	private RelativeLayout writeLayout;
 	private Bitmap originalLetterBitmap;
 	private int currentPos = 0;
 	private int pLetter;
@@ -38,13 +37,15 @@ public class WriteActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		setContentView(R.layout.write);
+		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
 		letterLayout = (LinearLayout) findViewById(R.id.layoutLetter);
-		writeLayout = (LinearLayout) findViewById(R.id.layoutWrite);
+		writeLayout = (RelativeLayout) findViewById(R.id.layoutWrite);
+		String name = getImageName();
 
 		letterLayout
 				.setBackgroundResource(getResources().getIdentifier(
-						"drawable/" + LettersImage[currentPos], null,
+						"drawable/" + name, null,
 						getPackageName()));
 
 		metrics = new DisplayMetrics();
@@ -61,6 +62,26 @@ public class WriteActivity extends Activity {
 
 		resetLayers();
 		super.onCreate(savedInstanceState);
+	}
+
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+		case BUTOON_REDO_ID:
+			resetLayers();
+			break;
+
+		case BUTTON_SKIP_ID:
+			if (currentPos < NO_LETTERS - 1) {
+				currentPos++;
+			} else {
+				currentPos = 0;
+			}
+			resetLayers();
+			break;
+
+		default:
+		}
 	}
 
 	private Bitmap scaleBitmap(Bitmap bitmap) {
@@ -88,13 +109,15 @@ public class WriteActivity extends Activity {
 
 			setPixelParams(scaledOriginalLetter, scaledDrawnLetter);
 
-			if ((float) pNotEqual / pEqual >= 1 || pLetter < pNotEqual) {
-				whatToDoNext();				
+			if ((float) pNotEqual / pEqual >= 0.5
+					|| (float) pNotEqual / pLetter >= 0.35) {
+				whatToDoNext();
 			}
 
-			if ((float) pEqual / pLetter > 0.71
-					&& (float) pEqual / pNotEqual > 1.5) {
-				if (currentPos < LettersImage.length - 1) {
+			if ((float) pEqual / pLetter > 0.73
+					&& (float) pNotEqual / pLetter <= 0.35
+					&& (float) pEqual / pNotEqual > 1) {
+				if (currentPos < NO_LETTERS - 1) {
 					currentPos++;
 				} else {
 					currentPos = 0;
@@ -107,13 +130,14 @@ public class WriteActivity extends Activity {
 	};
 
 	private void resetLayers() {
+		String name = getImageName();
 		letterLayout
 				.setBackgroundResource(getResources().getIdentifier(
-						"drawable/" + LettersImage[currentPos], null,
+						"drawable/" + name, null,
 						getPackageName()));
 
-		//add empty view
-		writeLayout.removeView(writeView);
+		// add empty view
+		writeLayout.removeAllViews();
 		writeView = new WriteView(this, metrics);
 		LayoutParams params = new LayoutParams(LayoutParams.FILL_PARENT,
 				LayoutParams.FILL_PARENT);
@@ -136,9 +160,38 @@ public class WriteActivity extends Activity {
 		pEqual = 0;
 		pNotEqual = 0;
 	}
-	
+
 	private void whatToDoNext() {
-		//not sure yet
+		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
+				RelativeLayout.LayoutParams.WRAP_CONTENT,
+				RelativeLayout.LayoutParams.WRAP_CONTENT);
+		lp.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+		lp.addRule(RelativeLayout.CENTER_IN_PARENT);
+
+		RelativeLayout.LayoutParams rp = new RelativeLayout.LayoutParams(
+				RelativeLayout.LayoutParams.WRAP_CONTENT,
+				RelativeLayout.LayoutParams.WRAP_CONTENT);
+		rp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+		rp.addRule(RelativeLayout.CENTER_IN_PARENT);
+
+		Button btnRedo = new Button(this);
+		Button btnSkip = new Button(this);
+
+		btnRedo.setPadding(10, 10, 10, 10);
+		btnSkip.setPadding(10, 10, 10, 10);
+
+		btnRedo.setText("Redo");
+		btnSkip.setText("Skip");
+
+		btnSkip.setId(BUTTON_SKIP_ID);
+		btnRedo.setId(BUTOON_REDO_ID);
+
+		btnRedo.setOnClickListener(this);
+		btnSkip.setOnClickListener(this);
+
+		writeLayout.removeAllViews();
+		writeLayout.addView(btnRedo, lp);
+		writeLayout.addView(btnSkip, rp);
 	}
 
 	private void setPixelParams(Bitmap image1, Bitmap image2) {
@@ -149,8 +202,7 @@ public class WriteActivity extends Activity {
 			for (int x = 0; x < image1.getWidth(); ++x) {
 				// background is transparent
 				// just check where there is a coloured pixel
-				if ((image1.getPixel(x, y) != 0 && image2.getPixel(x, y) == 0)
-						|| (image1.getPixel(x, y) == 0 && image2.getPixel(x, y) != 0)) {
+				if ((image1.getPixel(x, y) == 0 && image2.getPixel(x, y) != 0)) {
 					pNotEqual++;
 				} else if (image1.getPixel(x, y) != 0
 						&& image2.getPixel(x, y) != 0) {
@@ -161,5 +213,15 @@ public class WriteActivity extends Activity {
 				}
 
 			}
+	}
+	
+	private String getImageName() {
+		String name = "" + (char)(currentPos + SMALL_A_CODE);
+		if (currentPos % 2 == 0) {
+			name = name + "_small";
+		} else {
+			name = name + "_big";
+		}
+		return name;
 	}
 }

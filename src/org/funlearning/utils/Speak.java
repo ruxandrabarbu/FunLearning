@@ -42,10 +42,10 @@ public class Speak implements TextToSpeech.OnInitListener,
 				// Intent installIntent = new Intent();
 				// installIntent.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
 				// startActivity(installIntent);
-				Log.e("AlphabetAvtivity", "Language is not available.");
+				Log.e("FunLearningAvtivity", "Language is not available.");
 			} else if (result == TextToSpeech.LANG_NOT_SUPPORTED) {
 				// Language is not supported.
-				Log.e("AlphabetAvtivity", "Language is not supported.");
+				Log.e("FunLearningAvtivity", "Language is not supported.");
 			} else {
 				// Check the documentation for other possible result codes.
 				// For example, the language may be available for the locale,
@@ -54,7 +54,7 @@ public class Speak implements TextToSpeech.OnInitListener,
 			}
 		} else {
 			// Initialization failed.
-			Log.e("AlphabetAvtivity", "Could not initialize TextToSpeech.");
+			Log.e("FunLearningAvtivity", "Could not initialize TextToSpeech.");
 		}
 	}
 
@@ -87,5 +87,13 @@ public class Speak implements TextToSpeech.OnInitListener,
 
 	public boolean isPlaing() {
 		return isPlaying;
+	}
+	
+	public void setRare() {
+		mTts.setSpeechRate((float) 0.6);
+	}
+	
+	public void setNormal() {
+		mTts.setSpeechRate(1);
 	}
 }

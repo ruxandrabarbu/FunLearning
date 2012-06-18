@@ -1,9 +1,11 @@
 package org.funlearning.activities;
 
 import org.funlearning.R;
+import org.funlearning.utils.ImagesJSONParser;
 import org.funlearning.utils.Speak;
 
 import android.app.Activity;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.view.GestureDetector;
@@ -18,15 +20,10 @@ public class AlphabetActivity extends Activity implements OnClickListener {
 	private static final int SWIPE_MIN_DISTANCE = 120;
 	private static final int SWIPE_MAX_OFF_PATH = 250;
 	private static final int SWIPE_THRESHOLD_VELOCITY = 200;
-	private static final String[] LettersSmall = { "a", "b", "c", "d", "e",
-			"f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r",
-			"s", "t", "u", "v", "w", "x", "y", "z" };
-	private static final String[] LettersImage = { "apple", "bubbles",
-			"cupcake", "door", "eraser", "fire", "grapes", "hydrant",
-			"icecream", "jelly", "key", "lightbulb", "mountain", "nest",
-			"onion", "pencil", "questionmark", "ring", "snail", "tulip",
-			"umbrella", "vase", "watermelon", "xylophone", "yoyo", "zipper" };
-
+	private static final int SMALL_A_CODE = 97; //small a
+	private static final int NO_LETTERS = 24; //no of letters in the alphabet
+	
+	private ImagesJSONParser allImages; 
 	private GestureDetector gestureDetector;
 	private View.OnTouchListener gestureListener;
 	private Speak mTts;
@@ -38,9 +35,11 @@ public class AlphabetActivity extends Activity implements OnClickListener {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		setContentView(R.layout.alphabet);
+		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
 		mTts = new Speak(this);
-
+		allImages = new ImagesJSONParser(this);
+		
 		ivImageLetter = (ImageView) findViewById(R.id.ivImageLetter);
 		ivBigLetter = (ImageView) findViewById(R.id.ivBigLetter);
 		ivSmallLetter = (ImageView) findViewById(R.id.ivSmallLetter);
@@ -79,18 +78,18 @@ public class AlphabetActivity extends Activity implements OnClickListener {
 	}
 
 	private void sayText(int currentSaying) {
-		String toSay = LettersSmall[currentSaying] + " is for "
-				+ LettersImage[currentSaying];
+		String toSay = String.valueOf((char)(currentLetter + SMALL_A_CODE)) + " is for "
+				+ allImages.getAt(currentSaying);
 		mTts.speak(toSay, TextToSpeech.QUEUE_FLUSH);
 	}
 
 	private void changeImages(int currentPos) {
 
-		String a_big = LettersSmall[currentPos] + "_big";
-		String a_small = LettersSmall[currentPos] + "_small";
+		String a_big = (char)(currentLetter + SMALL_A_CODE) + "_big";
+		String a_small = (char)(currentLetter + SMALL_A_CODE) + "_small";
 
 		ivImageLetter.setImageResource(this.getResources().getIdentifier(
-				"drawable/" + LettersImage[currentPos], null,
+				"drawable/" + allImages.getAt(currentPos), null,
 				this.getPackageName()));
 		ivBigLetter.setImageResource(this.getResources().getIdentifier(
 				"drawable/" + a_big, null, this.getPackageName()));
@@ -102,14 +101,14 @@ public class AlphabetActivity extends Activity implements OnClickListener {
 		if (currentLetter > 0) {
 			currentLetter--;
 		} else {
-			currentLetter = LettersSmall.length - 1;
+			currentLetter = NO_LETTERS - 1;
 		}
 		changeImages(currentLetter);
 		sayText(currentLetter);
 	}
 
 	public void goForward() {
-		if (currentLetter < LettersSmall.length - 1) {
+		if (currentLetter < NO_LETTERS - 1) {
 			currentLetter++;
 		} else {
 			currentLetter = 0;
